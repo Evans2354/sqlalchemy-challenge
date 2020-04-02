@@ -81,6 +81,7 @@ def raintotals():
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 @app.route("/api/v1.0/<start>")
 def startdate(start):
+    try:
         user_start_date = dt.datetime.strptime(start,'%Y-%m-%d')
         
         calc_results = session.query(func.min(Measurement.tobs),\
@@ -90,10 +91,15 @@ def startdate(start):
         result_dict=\
         ({"MinTemp": (calc_results[0][0]), "MaxTemp": (calc_results[0][1]), "AvgTemp": (calc_results[0][2])})
         return jsonify(result_dict)
+    except Exception as e:
+        return(str(e))
+        
+    
     
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 @app.route("/api/v1.0/<start>/<end>")
 def startEnddate(start,end):
+    try:
         start_date = dt.datetime.strptime(start,'%Y-%m-%d')
         end_date =dt.datetime.strptime(end,'%Y-%m-%d')
         
@@ -106,6 +112,10 @@ def startEnddate(start,end):
         ({"MinTemp": (start_end_results[0][0]), "MaxTemp": (start_end_results[0][1]),\
          "AvgTemp": (start_end_results[0][2])})
         return jsonify(se_result_dict)
+    except Exception as e:
+        return(str(e))
+        #print("Please enter your Dates in this format: %yyyy-%mm-%dd")
+        
 #++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 if __name__ == "__main__":
     app.run(debug=True)
